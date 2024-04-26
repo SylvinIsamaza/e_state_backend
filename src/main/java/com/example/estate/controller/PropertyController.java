@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estate.models.Property;
-import com.example.estate.services.PropertyRepository;
+import com.example.estate.repository.PropertyRepository;
 
 
 

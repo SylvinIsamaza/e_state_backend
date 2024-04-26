@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class User {
-    @Id
+    @Id     
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String email;
@@ -26,13 +26,13 @@ public class User {
     private String avatar;
     private String role;
     private boolean isVerified;
-    private String username;
+    private String fullName;
     @OneToOne(mappedBy = "user")
     Agent agent;
 
-    public User(String username, String email, String phoneNumber, String password, String address, String avatar,
+    public User(String fullName, String email, String phoneNumber, String password, String address, String avatar,
             String role, boolean isVerified) {
-        this.username = username;
+        this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
@@ -40,6 +40,11 @@ public class User {
         this.avatar = avatar;
         this.role = role;
         this.isVerified = isVerified;
+    }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
 }

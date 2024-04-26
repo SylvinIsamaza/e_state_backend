@@ -1,7 +1,7 @@
 package com.example.estate.models;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

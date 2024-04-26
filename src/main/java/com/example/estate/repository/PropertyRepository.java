@@ -1,4 +1,4 @@
-package com.example.estate.services;
+package com.example.estate.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

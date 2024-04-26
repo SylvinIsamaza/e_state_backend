@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estate.models.Agent;
-import com.example.estate.models.User;
-import com.example.estate.services.AgentRepository;
-import com.example.estate.services.UserRepository;
+
+import com.example.estate.repository.AgentRepository;
+import com.example.estate.repository.UserRepository;
 import com.example.estate.utils.Response;
 
 @RestController
