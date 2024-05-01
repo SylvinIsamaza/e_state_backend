@@ -20,6 +20,7 @@ import com.example.estate.utils.Response;
 public class AgentController {
     private final AgentRepository agentRepository;
     private final UserRepository userRepository;
+    
     public AgentController(AgentRepository agentRepository,UserRepository userRepository) {
         this.agentRepository = agentRepository;
         this.userRepository=userRepository;

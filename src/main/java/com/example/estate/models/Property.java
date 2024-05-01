@@ -25,6 +25,7 @@ public class Property {
     private int nbrOfBeds;
     private boolean kitchen;
     private boolean wifi;
+    private boolean baths;
     private boolean parkingArea;
     private boolean balcony;
     private String status;
@@ -32,7 +33,7 @@ public class Property {
     Agent agent;
 
     public Property(String name, String description, int price, String location, int area, int nbrOfBeds,
-            boolean kitchen, boolean wifi, boolean parkingArea, boolean balcony, String status) {
+            boolean kitchen, boolean wifi, boolean parkingArea,boolean baths, boolean balcony, String status) {
         this.name = name;
         this.description = description;
         this.price = price;

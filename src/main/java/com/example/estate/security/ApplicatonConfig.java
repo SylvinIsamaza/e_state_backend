@@ -37,9 +37,9 @@ public class ApplicatonConfig {
 			@Override
 			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) { 
 				CorsConfiguration ccfg = new CorsConfiguration(); 
-				ccfg.setAllowedOrigins(Arrays.asList("*")); 
 				ccfg.setAllowedMethods(Collections.singletonList("*")); 
 				ccfg.setAllowCredentials(true); 
+				ccfg.setAllowedOriginPatterns(Arrays.asList("*")); 
 				ccfg.setAllowedHeaders(Collections.singletonList("*")); 
 				ccfg.setExposedHeaders(Arrays.asList("Authorization")); 
 				ccfg.setMaxAge(3600L); 
