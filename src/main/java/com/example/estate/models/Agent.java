@@ -29,7 +29,6 @@ public class Agent {
     private String about;
     private String phoneNumber;
     private String location;
-    private int age;
     private String facebook;
     private String instagram;
     private String twitter;
@@ -40,15 +39,15 @@ public class Agent {
     @OneToMany(mappedBy = "agent")
     List <Property> property;
 
-    public Agent(String username, String email, String password, String about, String phoneNumber, String location,
-            int age,
+    public Agent(String about, String phoneNumber, String location,
+    
             String facebook, String instagram, String twitter, String serviceArea, String taxNumber,
             String agentLicence,
             boolean isVerified) {
         this.about = about;
         this.phoneNumber = phoneNumber;
         this.location = location;
-        this.age = age;
+        
         this.facebook = facebook;
         this.instagram = instagram;
         this.twitter = twitter;
