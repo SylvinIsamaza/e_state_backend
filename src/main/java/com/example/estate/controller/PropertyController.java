@@ -3,6 +3,7 @@ package com.example.estate.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.estate.models.Property;
 import com.example.estate.repository.PropertyRepository;
-
-
+import com.example.estate.utils.Response;
 
 @RestController
 public class PropertyController {
@@ -27,26 +27,34 @@ public class PropertyController {
     List<Property> getAllProperty() {
         return propertyRepository.findAll();
     }
+
     @PostMapping("/property/new")
-    Property addProperty(@RequestBody Property property){
-        Property newProperty=property;
+    Property addProperty(@RequestBody Property property) {
+        Property newProperty = property;
         propertyRepository.save(newProperty);
         return newProperty;
     }
+
     @DeleteMapping("/property/{id}")
-    void DeletePropertyById( @PathVariable String id){
+    void DeletePropertyById(@PathVariable String id) {
         propertyRepository.deleteById(id);
     }
+
     @DeleteMapping("/property")
-    void DeleteAll(@PathVariable String id){
+    void DeleteAll(@PathVariable String id) {
         propertyRepository.deleteAll();
     }
+
     @GetMapping("property/{id}")
-    Optional<Property> getPropertyById( @PathVariable String id){
+    Optional<Property> getPropertyById(@PathVariable String id) {
         return propertyRepository.findById(id);
-        }
-    
-    
-    
+    }
+
+    @PostMapping("property/{id}")
+    ResponseEntity<Response<Property>> updateProperty(@RequestBody Property property, @PathVariable String id) {
+
+        Response<Property> response = new Response<Property>(false, null);
+        return ResponseEntity.ok().body(response);
+    }
 
 }

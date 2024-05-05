@@ -28,6 +28,7 @@ import com.example.estate.security.JwtProvider;
 import com.example.estate.security.UserServiceImplementation;
 import com.example.estate.utils.AuthRequest;
 import com.example.estate.utils.AuthResponse;
+import com.example.estate.utils.Response;
 
 @RestController
 public class UserController {
@@ -106,6 +107,7 @@ public class UserController {
 
     @GetMapping("/authenticate")
     public ResponseEntity<User> getUserByJwt() {
+        System.out.println("Authentication");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             System.out.println("bad credentials");
@@ -130,6 +132,46 @@ public class UserController {
     @DeleteMapping("/user")
     void DeleteAllUsers() {
         userRepository.deleteAll();
+    }
+    @PostMapping("/user/{id}")
+    ResponseEntity<Response<User>> updateUserById(@RequestBody User userPayload, @PathVariable String id) {
+        User userOptional = userRepository.findById(id).orElse(null);
+        if (userOptional != null) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.getPrincipal().toString().equals(userOptional.getEmail().toString())) {
+                if (userPayload.getFullName() != null) {
+                    userOptional.setFullName(userPayload.getFullName());
+                }
+                if (userPayload.getAge() != 0) {
+                    userOptional.setAge(userPayload.getAge());
+                }
+                if (userPayload.getAddress() != null) {
+                    userOptional.setAddress(userPayload.getAddress());
+                }
+                if (userPayload.isVerified()) {
+                    userOptional.setVerified(userPayload.isVerified());
+                }
+                if (userPayload.getPhoneNumber() != null) {
+                    userOptional.setPhoneNumber(userPayload.getPhoneNumber());
+                }
+                if (userPayload.getAvatar() != null) {
+                    userOptional.setAvatar(userPayload.getAvatar());
+                }
+                if (userPayload.getRole() != null) {
+                    userOptional.setRole(userPayload.getRole());
+                }
+                userRepository.save(userOptional);
+                Response<User> response = new Response<User>(false, userOptional, "User updated successfully");
+                return ResponseEntity.ok().body(response);
+
+            }
+
+        }
+        else {
+            Response<User> response = new Response<User>(false, null, "User not found");
+            return ResponseEntity.status(404).body(response);
+        }
+        return ResponseEntity.ok().body(null);
     }
 
 }
