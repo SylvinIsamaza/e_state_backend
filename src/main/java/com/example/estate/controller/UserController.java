@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +29,13 @@ import com.example.estate.utils.AuthRequest;
 import com.example.estate.utils.AuthResponse;
 import com.example.estate.utils.Response;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 public class UserController {
     @Autowired
@@ -42,18 +48,29 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+    @Operation(summary = "Login ")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully Logged in"),
+            @ApiResponse(responseCode = "401", description ="Invalid username or password"),
+            @ApiResponse(responseCode = "500",description = "Something went wrong")
+    })
+
     @PostMapping("/auth/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<Response> login(@RequestBody AuthRequest request) {
 
         UserDetails userDetails = customUserDetails.loadUserByUsername(request.getEmail());
 
         if (userDetails == null) {
-            throw new BadCredentialsException("Invalid username or password");
+           
+            Response<String> response = new Response<String>(false, "Invalid username or password");
+            return ResponseEntity.status(401).body(response);
         }
         if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
             System.out.println("Sign in userDetails - password mismatch" + userDetails);
-
-            throw new BadCredentialsException("Invalid username or password");
+            Response<String> response = new Response<String>(false, "Invalid username or password");
+            return ResponseEntity.status(401).body(response);
+            // throw new BadCredentialsException("Invalid username or password");
+            
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, request.getPassword(),
@@ -72,10 +89,14 @@ public class UserController {
         ResponseCookie authCookie = ResponseCookie.from("token", token).maxAge(6800).build();
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, authCookie.toString());
-
-        return ResponseEntity.ok().headers(headers).body(authResponse);
+        Response<AuthResponse> response = new Response<AuthResponse>(false, authResponse);
+        return ResponseEntity.ok().headers(headers).body(response);
     }
-
+    @Operation(summary = "Sign up ")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully Registered"),
+            @ApiResponse(responseCode = "500", description = "Register failed")
+    })
     @PostMapping("/user/register")
     ResponseEntity<AuthResponse> register(@RequestBody User user) {
 
@@ -99,40 +120,77 @@ public class UserController {
 
         return ResponseEntity.ok().headers(headers).body(authResponse);
     }
-
+    @Operation(summary = "Get user by Id ")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "500", description = "Something went wrong"),
+            @ApiResponse(responseCode = "401",description = "User not found")
+    })
     @GetMapping("/user/{id}")
     Optional<User> getUserById(@PathVariable String id) {
         return userRepository.findById(id);
     }
 
+    @Operation(summary = "Authentication")
+    @Parameter(name = "Authorization", description = "Token received from login", required = true, in = ParameterIn.HEADER, schema = @Schema(type = "string"))
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "403", description = "Invalid credentials"),
+        @ApiResponse(responseCode ="500",description = "Something went wrong")
+    })
     @GetMapping("/authenticate")
-    public ResponseEntity<User> getUserByJwt() {
-        System.out.println("Authentication");
+    public ResponseEntity<Response> getUserByJwt() {
+       try {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             System.out.println("bad credentials");
+            Response<String> response = new Response<String>(false, "Invalid credentials"); 
             // Handle the case where the provided token does not match the authenticated token
-            return ResponseEntity.status(403).body(null);
+            return ResponseEntity.status(403).body(response);
         }
-
         User user = userRepository.findByEmail(authentication.getPrincipal().toString());
-        return ResponseEntity.status(200).body(user);
+        Response<User> userResponse = new Response<User>(true, user);
+        return ResponseEntity.status(200).body(userResponse);
+       } catch (Exception e) {
+           Response<String> response = new Response<String>(false, "Something went wrong");
+           return ResponseEntity.status(500).body(response);
+       }
+        
     }
-
+    @Operation(summary = "Get all users")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode ="500",description = "Something went wrong")
+    })
     @GetMapping("/user")
     List<User> getAllUser() {
         return userRepository.findAll();
     }
+    @Operation(summary = "Delete user by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode ="500",description = "Something went wrong")
+    })
 
     @DeleteMapping("/user/{id}")
     void DeleteUserById(@PathVariable String id) {
         userRepository.deleteById(id);
     }
-
+    @Operation(summary = "Delete all users")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode ="500",description = "Something went wrong")
+    })
     @DeleteMapping("/user")
     void DeleteAllUsers() {
         userRepository.deleteAll();
     }
+    @Operation(summary = "Update user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "403", description = "Invalid credentials"),
+        @ApiResponse(responseCode ="500",description = "Something went wrong")
+    })
     @PostMapping("/user/{id}")
     ResponseEntity<Response<User>> updateUserById(@RequestBody User userPayload, @PathVariable String id) {
         User userOptional = userRepository.findById(id).orElse(null);
@@ -165,13 +223,16 @@ public class UserController {
                 return ResponseEntity.ok().body(response);
 
             }
-
+            else {
+                Response<User> response = new Response<User>(false, null, "Invalid credentials");
+                return ResponseEntity.status(403).body(response);
+        }
         }
         else {
             Response<User> response = new Response<User>(false, null, "User not found");
             return ResponseEntity.status(404).body(response);
         }
-        return ResponseEntity.ok().body(null);
+        
     }
 
 }

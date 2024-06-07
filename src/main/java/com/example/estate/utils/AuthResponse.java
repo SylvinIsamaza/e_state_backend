@@ -15,6 +15,7 @@ public class AuthResponse {
 	public String getJwt() {
 		return jwt;
 	}
+
 	
 
 	public User getUser() {
@@ -43,7 +44,8 @@ public class AuthResponse {
 		return status; 
 	} 
 
-	public void setStatus(Boolean status) { 
-		this.status = status; 
-	} 
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+	
 } 

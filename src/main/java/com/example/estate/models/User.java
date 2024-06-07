@@ -2,6 +2,7 @@ package com.example.estate.models;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class User {
+    
     @Id     
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

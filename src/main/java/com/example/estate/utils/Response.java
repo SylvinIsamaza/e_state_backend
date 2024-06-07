@@ -1,8 +1,12 @@
 package com.example.estate.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Response<T> {
- public boolean success;
+    public boolean success;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
  public T data;
+ @JsonInclude(JsonInclude.Include.NON_NULL)
  public String message;
  
 public Response(boolean success, T data) {
@@ -16,7 +20,12 @@ public Response(boolean success, T data,String message) {
 }
 @Override
 public String toString() {
-    return "{success=" + success + ", data=" + data + "}";
+    if (message == null) {
+        return "{success=" + success + ", data=" + data + "}";
+    }
+    else {
+        return "{success=" + success +","+ data + "}";  
+    }
 }
  
 }
