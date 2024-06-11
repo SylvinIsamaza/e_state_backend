@@ -8,7 +8,10 @@ import org.springframework.stereotype.Controller;
 
 import com.example.estate.utils.ChatMessage;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @Controller
+@Tag(name="Chat",description = "Chat Web sockets")
 public class ChatController {
   private SimpMessagingTemplate simpMessagingTemplate;
   @MessageMapping("/chat.sendMessage")

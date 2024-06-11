@@ -15,7 +15,10 @@ import com.example.estate.models.Property;
 import com.example.estate.repository.PropertyRepository;
 import com.example.estate.utils.Response;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name="Property",description = "Property APIs")
 public class PropertyController {
     final private PropertyRepository propertyRepository;
 

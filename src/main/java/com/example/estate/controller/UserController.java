@@ -34,9 +34,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
+@Tag(name="User",description = "User APIs")
 public class UserController {
     @Autowired
     private UserServiceImplementation customUserDetails;
@@ -72,7 +75,7 @@ public class UserController {
             // throw new BadCredentialsException("Invalid username or password");
             
         }
-
+        
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, request.getPassword(),
                 userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

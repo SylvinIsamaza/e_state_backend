@@ -19,7 +19,10 @@ import com.example.estate.repository.AgentRepository;
 import com.example.estate.repository.UserRepository;
 import com.example.estate.utils.Response;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name="Agent",description = "Agent APIs")
 public class AgentController {
     private final AgentRepository agentRepository;
     private final UserRepository userRepository;

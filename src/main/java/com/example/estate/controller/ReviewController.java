@@ -14,7 +14,10 @@ import com.example.estate.models.Review;
 import com.example.estate.repository.ReviewRepository;
 import com.example.estate.utils.Response;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name="Review",description = "Review APIs")
 public class ReviewController {
   private final ReviewRepository reviewRepository;
 
