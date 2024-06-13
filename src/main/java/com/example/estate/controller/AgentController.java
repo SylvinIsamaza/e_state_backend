@@ -19,57 +19,101 @@ import com.example.estate.repository.AgentRepository;
 import com.example.estate.repository.UserRepository;
 import com.example.estate.utils.Response;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
-@Tag(name="Agent",description = "Agent APIs")
+@Tag(name="Agent", description = "Agent APIs")
 public class AgentController {
     private final AgentRepository agentRepository;
     private final UserRepository userRepository;
-    
-    public AgentController(AgentRepository agentRepository,UserRepository userRepository) {
+
+    public AgentController(AgentRepository agentRepository, UserRepository userRepository) {
         this.agentRepository = agentRepository;
-        this.userRepository=userRepository;
+        this.userRepository = userRepository;
     }
+
+    @Operation(summary = "Get all agents",
+               description = "Retrieve a list of all agents",
+               responses = {
+                   @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
+                                content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = Agent.class)))
+               })
     @GetMapping("/agents")
-    Response<List <Agent>>getAllAgents(){
-    Response<List <Agent>> agents=new Response<List<Agent>>(true,agentRepository.findAll());
-    return agents;    
-    } 
+    Response<List<Agent>> getAllAgents() {
+        Response<List<Agent>> agents = new Response<List<Agent>>(true, agentRepository.findAll());
+        return agents;
+    }
+
+    @Operation(summary = "Get a single agent",
+               description = "Retrieve a single agent by ID",
+               responses = {
+                   @ApiResponse(responseCode = "200", description = "Successfully retrieved agent",
+                                content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = Agent.class))),
+                   @ApiResponse(responseCode = "404", description = "Agent not found")
+               })
     @GetMapping("/agents/{id}")
-    Response<Optional <Agent>> getSingleEmployee(@PathVariable String id){
-        Response<Optional <Agent>> agent=new Response<Optional<Agent>>(true, agentRepository.findById(id)) ;
+    Response<Optional<Agent>> getSingleAgent(@PathVariable String id) {
+        Response<Optional<Agent>> agent = new Response<Optional<Agent>>(true, agentRepository.findById(id));
         return agent;
     }
+
+    @Operation(summary = "Create a new agent",
+               description = "Add a new agent to the database",
+               responses = {
+                   @ApiResponse(responseCode = "200", description = "Successfully created agent",
+                                content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = Agent.class))),
+                   @ApiResponse(responseCode = "401", description = "Unauthorized")
+               })
     @PostMapping("/agents/new")
     Response<Agent> addAgent(@RequestBody Agent agent) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
-        if (authentication == null||authentication.getPrincipal()=="anonymousUser") {
-            
-            Response<Agent> newResponse = new Response<Agent>(false, null,"Login to continue");
+        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
+            Response<Agent> newResponse = new Response<Agent>(false, null, "Login to continue");
             return newResponse;
         }
         User user = userRepository.findByEmail(authentication.getPrincipal().toString());
 
         if (user != null) {
-            Agent newAgent = agent;
             agent.setUser(user);
-            Response<Agent> response = new Response<Agent>(true, newAgent);
-            agentRepository.save(newAgent);
+            agentRepository.save(agent);
+            Response<Agent> response = new Response<Agent>(true, agent);
             return response;
         }
-        Response<Agent> newResponse = new Response<Agent>(false, null,"Invalid credentials");
-            return newResponse;
-        
+        Response<Agent> newResponse = new Response<Agent>(false, null, "Invalid credentials");
+        return newResponse;
     }
+
+    @Operation(summary = "Delete an agent",
+               description = "Delete an agent by ID",
+               responses = {
+                   @ApiResponse(responseCode = "200", description = "Successfully deleted agent",
+                                content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = String.class))),
+                   @ApiResponse(responseCode = "404", description = "Agent not found")
+               })
     @DeleteMapping("/agents/delete/{id}")
     Response<String> deleteAgentById(@PathVariable String id) {
-        Response<String> response = new Response<String>(false, "User with id" + id + "successfully deleted");
         agentRepository.deleteById(id);
+        Response<String> response = new Response<String>(true, "User with id " + id + " successfully deleted");
         return response;
-
     }
+
+    @Operation(summary = "Update an agent",
+               description = "Update an agent by ID",
+               responses = {
+                   @ApiResponse(responseCode = "200", description = "Successfully updated agent",
+                                content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = Agent.class))),
+                   @ApiResponse(responseCode = "403", description = "Permission denied"),
+                   @ApiResponse(responseCode = "404", description = "Agent not found")
+               })
     @PostMapping("/agent/update/{id}")
     ResponseEntity<Response<Agent>> updateAgentById(@PathVariable String id, @RequestBody Agent agentPayload)
     {
