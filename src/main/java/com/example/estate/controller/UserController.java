@@ -100,7 +100,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Successfully Registered"),
             @ApiResponse(responseCode = "500", description = "Register failed")
     })
-    @PostMapping("/user/register")
+    @PostMapping("/auth/register")
     ResponseEntity<AuthResponse> register(@RequestBody User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

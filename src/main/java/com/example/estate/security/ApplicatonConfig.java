@@ -23,7 +23,7 @@ public class ApplicatonConfig {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception { 
 		http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
 				.authorizeRequests( 
-						authorize -> authorize.requestMatchers("/property/new","/agents/new","/agents/delete/?*") 
+						authorize -> authorize.requestMatchers("/property/new","/agents/new","/agents/delete/?*","/user/?*","/user") 
 						.authenticated().anyRequest().permitAll()) 
 				.addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class) 
 				.csrf(csrf -> csrf.disable()) 
