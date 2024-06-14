@@ -27,7 +27,7 @@ public class ApplicatonConfig {
 								.requestMatchers("/property/new", "/agents/new", "/agents/delete/?*", "/user/?*", "/user")
 								.authenticated().anyRequest()
 								.permitAll()
-						.requestMatchers("/user").hasAuthority("ADMIN")) 
+						) 
 				.addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class) 
 				.csrf(csrf -> csrf.disable()) 
 				.cors(cors -> cors.configurationSource(corsConfigurationSource())); 
