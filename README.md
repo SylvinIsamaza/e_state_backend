@@ -15,7 +15,7 @@ Property Listings: Browse, search, and filter properties by various criteria.
 - Security: Spring Security
 - Build Tool: Maven
 
-## Get started
+## Getting started
 ### Prequesities
 - JDK 17 or Higher
 - Maven 4.0.0 or higher
@@ -51,7 +51,7 @@ Property Listings: Browse, search, and filter properties by various criteria.
 
     You can use the Swagger UI to explore and test the API endpoints.
 
-    ![alt text](image.png)
+    ![App screenshoot](image.png)
 
 ## Project Structure
 
@@ -59,7 +59,7 @@ Property Listings: Browse, search, and filter properties by various criteria.
 
 
 - **src/main/java**: Contains the Java source files
-  - **com.example.realestate**: Main package
+  - **com.example.estate**: Main package
     - **config**: Configuration classes (e.g., `SecurityConfig.java`)
     - **controller**: REST controllers (e.g., `PropertyController.java`, `AgentController.java`, `UserController.java`)
     - **model**: Entity classes (e.g., `Property.java`, `Agent.java`, `User.java`)
@@ -78,4 +78,6 @@ Property Listings: Browse, search, and filter properties by various criteria.
 
 This structure ensures that the application is organized and follows best practices, making it easier to maintain and scale.
 
+## Authors
 
+- [@SylvinIsamaza](https://github.com/SylvinIsamaza)
