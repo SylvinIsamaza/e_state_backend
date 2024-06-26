@@ -199,7 +199,9 @@ public class UserController {
         if (userOptional != null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication.getPrincipal().toString().equals(userOptional.getEmail().toString())) {
+                //check field provided by user and update them
                 Optional.ofNullable(userPayload.getFullName()).ifPresent(userOptional::setFullName);
+                
         Optional.ofNullable(userPayload.getAge()).filter(age -> age != 0).ifPresent(userOptional::setAge);
         Optional.ofNullable(userPayload.getAddress()).ifPresent(userOptional::setAddress);
         if (userPayload.isVerified()) {

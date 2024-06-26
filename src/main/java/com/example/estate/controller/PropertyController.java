@@ -108,7 +108,7 @@ public class PropertyController {
                })
     @PutMapping("/property/{id}")
     ResponseEntity<Response<Property>> updateProperty(@RequestBody Property property, @PathVariable String id) {
-        // Implement the update logic
+       //check field provided by user and update them
         if (propertyRepository.existsById(id)) {
             property.setId(id); 
             Property updatedProperty = propertyRepository.save(property);
