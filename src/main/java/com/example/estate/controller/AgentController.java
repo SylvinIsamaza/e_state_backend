@@ -123,9 +123,7 @@ public class AgentController {
             return ResponseEntity.status(403).body(agent);
         }
         User user = userRepository.findByEmail(authentication.getPrincipal().toString());
-        System.out.println(user.getEmail());
-        System.out.println(authentication.getPrincipal());
-        System.out.println(authentication.getPrincipal().toString().equals(user.getEmail().toString()));
+
         if (!authentication.getPrincipal().toString().equals(user.getEmail().toString()) ) {
             Response<Agent> agent = new Response<Agent>(false, null, "Permission denied");
             return ResponseEntity.status(403).body(agent);

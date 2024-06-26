@@ -70,7 +70,6 @@ public class UserController {
             return ResponseEntity.status(401).body(response);
         }
         if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
-            System.out.println("Sign in userDetails - password mismatch" + userDetails);
             Response<String> response = new Response<String>(false, "Invalid username or password");
             return ResponseEntity.status(401).body(response);
             // throw new BadCredentialsException("Invalid username or password");
@@ -147,7 +146,6 @@ public class UserController {
        try {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            System.out.println("bad credentials");
             Response<String> response = new Response<String>(false, "Invalid credentials"); 
             // Handle the case where the provided token does not match the authenticated token
             return ResponseEntity.status(403).body(response);
