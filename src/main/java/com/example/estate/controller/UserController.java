@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -194,33 +195,21 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Invalid credentials"),
         @ApiResponse(responseCode ="500",description = "Something went wrong")
     })
-    @PostMapping("/user/{id}")
+    @PutMapping("/user/{id}")
     ResponseEntity<Response<User>> updateUserById(@RequestBody User userPayload, @PathVariable String id) {
         User userOptional = userRepository.findById(id).orElse(null);
         if (userOptional != null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication.getPrincipal().toString().equals(userOptional.getEmail().toString())) {
-                if (userPayload.getFullName() != null) {
-                    userOptional.setFullName(userPayload.getFullName());
-                }
-                if (userPayload.getAge() != 0) {
-                    userOptional.setAge(userPayload.getAge());
-                }
-                if (userPayload.getAddress() != null) {
-                    userOptional.setAddress(userPayload.getAddress());
-                }
-                if (userPayload.isVerified()) {
-                    userOptional.setVerified(userPayload.isVerified());
-                }
-                if (userPayload.getPhoneNumber() != null) {
-                    userOptional.setPhoneNumber(userPayload.getPhoneNumber());
-                }
-                if (userPayload.getAvatar() != null) {
-                    userOptional.setAvatar(userPayload.getAvatar());
-                }
-                if (userPayload.getRole() != null) {
-                    userOptional.setRole(userPayload.getRole());
-                }
+                Optional.ofNullable(userPayload.getFullName()).ifPresent(userOptional::setFullName);
+        Optional.ofNullable(userPayload.getAge()).filter(age -> age != 0).ifPresent(userOptional::setAge);
+        Optional.ofNullable(userPayload.getAddress()).ifPresent(userOptional::setAddress);
+        if (userPayload.isVerified()) {
+            userOptional.setVerified(true);
+        }
+        Optional.ofNullable(userPayload.getPhoneNumber()).ifPresent(userOptional::setPhoneNumber);
+        Optional.ofNullable(userPayload.getAvatar()).ifPresent(userOptional::setAvatar);
+        Optional.ofNullable(userPayload.getRole()).ifPresent(userOptional::setRole);
                 userRepository.save(userOptional);
                 Response<User> response = new Response<User>(false, userOptional, "User updated successfully");
                 return ResponseEntity.ok().body(response);

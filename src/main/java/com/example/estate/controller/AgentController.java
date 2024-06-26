@@ -138,36 +138,19 @@ public class AgentController {
                 return ResponseEntity.status(404).body(newResponse);
             } else {
                 Agent newAgent = agent.get();
-                if (agentPayload.getAbout() != null) {
-                    newAgent.setAbout(agentPayload.getAbout());
-                }
-                if (agentPayload.getPhoneNumber() != null) {
-                    newAgent.setPhoneNumber(agentPayload.getPhoneNumber());
-                }
-                if (agentPayload.getLocation() != null) {
-                    newAgent.setLocation(agentPayload.getLocation());
-                }
-                if (agentPayload.getFacebook() != null) {
-                    newAgent.setFacebook(agentPayload.getFacebook());
-                }
-                if (agentPayload.getInstagram() != null) {
-                    newAgent.setInstagram(agentPayload.getInstagram());
-                }
-                if (agentPayload.getTwitter() != null) {
-                    newAgent.setTwitter(agentPayload.getTwitter());
-                }
-                if (agentPayload.getServiceArea() != null) {
-                    newAgent.setServiceArea(agentPayload.getServiceArea());
-                }
-                if (agentPayload.getAgentLicence() != null) {
-                    newAgent.setAgentLicence(agentPayload.getAgentLicence());
-                }
-                if (agentPayload.getTaxNumber() != null) {
-                    newAgent.setTaxNumber(agentPayload.getTaxNumber());
-                }
-                    if (agentPayload.isVerified()) {
-                    newAgent.setVerified(agentPayload.isVerified());
-                }
+                Optional.ofNullable(agentPayload.getAbout()).ifPresent(newAgent::setAbout);
+        Optional.ofNullable(agentPayload.getPhoneNumber()).ifPresent(newAgent::setPhoneNumber);
+        Optional.ofNullable(agentPayload.getLocation()).ifPresent(newAgent::setLocation);
+        Optional.ofNullable(agentPayload.getFacebook()).ifPresent(newAgent::setFacebook);
+        Optional.ofNullable(agentPayload.getInstagram()).ifPresent(newAgent::setInstagram);
+        Optional.ofNullable(agentPayload.getTwitter()).ifPresent(newAgent::setTwitter);
+        Optional.ofNullable(agentPayload.getServiceArea()).ifPresent(newAgent::setServiceArea);
+        Optional.ofNullable(agentPayload.getAgentLicence()).ifPresent(newAgent::setAgentLicence);
+        Optional.ofNullable(agentPayload.getTaxNumber()).ifPresent(newAgent::setTaxNumber);
+
+        if (agentPayload.isVerified()) {
+            newAgent.setVerified(true);
+        }
                 agentRepository.save(newAgent);
                 Response<Agent> response = new Response<Agent>(true, newAgent);
                 return ResponseEntity.status(200).body(response);

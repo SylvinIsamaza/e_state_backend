@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -105,11 +106,11 @@ public class PropertyController {
                               content = @Content(mediaType = "application/json",
                               schema = @Schema(implementation = Property.class)))
                })
-    @PostMapping("/property/{id}")
+    @PutMapping("/property/{id}")
     ResponseEntity<Response<Property>> updateProperty(@RequestBody Property property, @PathVariable String id) {
         // Implement the update logic
         if (propertyRepository.existsById(id)) {
-            property.setId(id); // Assuming Property has a setId method
+            property.setId(id); 
             Property updatedProperty = propertyRepository.save(property);
             Response<Property> response = new Response<Property>(true, updatedProperty);
             return ResponseEntity.ok().body(response);
